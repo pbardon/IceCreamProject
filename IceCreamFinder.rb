@@ -72,7 +72,6 @@ end
 
 
 shopcoords.each_with_index do |coord, index|
-
   directions_address = Addressable::URI.new(
       :scheme => "https",
       :host => "maps.googleapis.com",
@@ -87,14 +86,16 @@ shopcoords.each_with_index do |coord, index|
   dir_output = JSON.parse(RestClient.get(directions_address))
 
   route = dir_output['routes'].first
+  next if route.nil?
   steps = route['legs'].first['steps']
-  
+  next if steps.nil?
   puts shop_names[index]
   puts "______________________"
   puts
   instructions = steps.map do |step|
     parsed_html = Nokogiri::HTML(step['html_instructions']).text
-  end
+  end 
+  next if instructions.nil?
   instructions.each {|step| puts step}
   puts
 end
