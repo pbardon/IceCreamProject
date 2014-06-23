@@ -33,18 +33,23 @@ location = results['geometry']['location']
 lat = location["lat"]
 long = location["lng"]
 
-coordinates = "#{lat}, #{long}"
+coordinates = "#{lat},#{long}"
 
 puts coordinates
 
 
 search_address = Addressable::URI.new(
-  :scheme => "http",
+  :scheme => "https",
   :host => "maps.googleapis.com",
   :path => "maps/api/place/nearbysearch/json",
-  :query_values => {key: $api_key, location: coordinates, keyword: "Ice Cream", rank_by: "distance"}
+  :query_values => {key: $api_key, location: coordinates, keyword: "Ice Cream", types: 'food', radius: '1000', sensor: false}
 ).to_s
+p search_address
 
 search_output = JSON.parse(RestClient.get(search_address))
 
-puts search_output
+
+
+nearby_shops = search_output["results"].map{|result| result["name"]}
+
+puts nearby_shops
